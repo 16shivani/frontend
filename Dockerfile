@@ -17,3 +17,4 @@ RUN npm run build
 
 # Set the command to run when the container starts
 CMD ["npm", "start"]
+EXPOSE 3000
