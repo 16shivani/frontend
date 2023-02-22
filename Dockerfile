@@ -1,20 +1,28 @@
-FROM node:14-alpine
 
-# Set the working directory inside the container
+FROM node:16.18.0-alpine as builder
+
+# set working directory
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the container
-COPY package*.json ./
+# add `/app/node_modules/.bin` to $PATH
+# ENV PATH /app/node_modules/.bin:$PATH
 
-# Install the dependencies inside the container
-RUN npm install
+# install app dependencies
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn
+RUN npm install react-scripts@4.0.1 -g --silent
 
-# Copy the rest of the application files to the container
-COPY . .
+# add app
+COPY . ./
 
-# Build the application inside the container
-RUN npm run build
+# start app
+RUN yarn run build
 
-# Set the command to run when the container starts
-CMD ["npm", "start"]
-EXPOSE 3000
+
+# Serving through nginx
+FROM nginx:1.17.1-alpine
+
+COPY default.conf /etc/nginx/conf.d/
+
+COPY --from=builder /app/build /usr/share/nginx/html
