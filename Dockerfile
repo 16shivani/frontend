@@ -1,28 +1,16 @@
 
-FROM node:16.18.0-alpine as builder
-
-# set working directory
+FROM node:14-alpine
+# Set the working directory to /app
 WORKDIR /app
-
-# add `/app/node_modules/.bin` to $PATH
-# ENV PATH /app/node_modules/.bin:$PATH
-
-# install app dependencies
-COPY package.json ./
-COPY yarn.lock ./
-RUN yarn
-RUN npm install react-scripts@4.0.1 -g --silent
-
-# add app
-COPY . ./
-
-# start app
-RUN yarn run build
-
-
-# Serving through nginx
-FROM nginx:1.17.1-alpine
-
-COPY default.conf /etc/nginx/conf.d/
-
-COPY --from=builder /app/build /usr/share/nginx/html
+# Copy the package.json and package-lock.json files to the working directory
+COPY package*.json ./
+# Install dependencies
+RUN npm install
+# Copy the rest of the application code to the working directory
+COPY . .
+# Build the production version of the application
+RUN npm run build
+# Expose port 3000 to the outside world
+EXPOSE 3000
+# Start the application
+CMD [ "npm", "start" ]
