@@ -9,8 +9,8 @@ RUN npm install
 # Copy the rest of the application code to the working directory
 COPY . .
 # Build the production version of the application
-RUN npm run build
+#RUN npm run build
 # Expose port 3000 to the outside world
-EXPOSE 3000
+#EXPOSE 3000
 # Start the application
 CMD [ "npm", "start" ]
