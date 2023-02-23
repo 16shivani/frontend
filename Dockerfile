@@ -1,5 +1,5 @@
 
-FROM node:14-alpine
+FROM node:alpine
 # Set the working directory to /app
 WORKDIR /app
 # Copy the package.json and package-lock.json files to the working directory
